@@ -2,3 +2,15 @@ FaceRecognition1: Basic Haarcascade identifier
 FaceRecognition2: Check directory for faces already detected (slow)
 FaceRecognition3: Using different model and GPU support (Can change face detection to GPU but face recognition is difficult to change to gpu)
 FaceRecognition4: Instead of haarcascade or CNN using Yolov8-facedetect
+
+
+
+Current Code to be used (2):
+(4) is far more accurate and is capable of detecting multiple faces in an image easily,
+however we are passing a bounding box that has only 1 face, so singular speed is prioritized
+(2) Haarcascades is far faster than a dense neural network and will be used as the working model
+
+
+Shortcomings:
+The face recognition program is using CPU rather than gpu
+

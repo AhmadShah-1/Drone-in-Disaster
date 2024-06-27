@@ -1,5 +1,6 @@
 import cv2
 import os
+import time
 from PIL import Image
 import torch
 import face_recognition
@@ -7,17 +8,20 @@ import numpy as np
 from ultralytics import YOLO
 
 # Load the YOLOv8-face model
-model = YOLO("C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Second_Iteration/Images/weights/Yolo/yolov8n-face.pt")  # Update with the correct path to the YOLOv8 face model
+model = YOLO("C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Face_Recognition/weights/Yolo/yolov8n-face.pt")  # Update with the correct path to the YOLOv8 face model
 
 # Load the image
-image_path = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Second_Iteration/Images/People/image2.jpg'
+image_path = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Face_Recognition/Images/People/image2.jpg'
 image = cv2.imread(image_path)
 
+print("Starting face predictions")
+# Start the timer
+start_time = time.time()
 # Detect faces in the image
 results = model.predict(image)
 
 # Directory to save unique faces
-faces_directory = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Second_Iteration/Images/Detected_Faces/'
+faces_directory = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Face_Recognition/Images/Detected_Faces/'
 if not os.path.exists(faces_directory):
     os.makedirs(faces_directory)
 
@@ -38,14 +42,13 @@ def is_face_already_detected(face_image, directory):
                     return True
     return False
 
-print("Starting")
 # Iterate over the detected faces and save unique faces
-for i, det in enumerate(results.xyxy[0]):
+for i, det in enumerate(results[0].boxes.xyxy.cpu().numpy()):
     # Extract the bounding box coordinates
-    x1, y1, x2, y2, conf = det[:5]
+    x1, y1, x2, y2 = map(int, det[:4])
 
     # Extract the face from the image
-    face = image[int(y1):int(y2), int(x1):int(x2)]
+    face = image[y1:y2, x1:x2]
     face_rgb = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
 
     # Check if the face is already detected
@@ -60,4 +63,8 @@ for i, det in enumerate(results.xyxy[0]):
     else:
         print(f'Face {i + 1} is already detected.')
 
-print(f'Detected and saved unique faces.')
+# End the timer
+end_time = time.time()
+elapsed_time = end_time - start_time
+
+print(f'Detected and saved unique faces in {elapsed_time:.2f} seconds.')

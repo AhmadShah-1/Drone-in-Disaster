@@ -4,7 +4,7 @@ import cv2
 from PIL import Image
 
 # Load the image
-image_path = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Second_Iteration/Images/People/image2.jpg'
+image_path = '/Testing/Face_Recognition/Images/People/image2.jpg'
 image = cv2.imread(image_path)
 
 # Convert the image to grayscale
@@ -26,7 +26,7 @@ for i, (x, y, w, h) in enumerate(faces):
     face_image = Image.fromarray(cv2.cvtColor(face, cv2.COLOR_BGR2RGB))
 
     # Save the face image
-    face_image_path = f'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Second_Iteration/Images/Detected_Faces/face_{i + 1}.jpg'
+    face_image_path = f'/Testing/Face_Recognition/Images/Detected_Faces/face_{i + 1}.jpg'
     face_image.save(face_image_path)
     print(f'Saved face {i + 1} to {face_image_path}')
 

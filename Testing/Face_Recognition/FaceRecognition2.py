@@ -3,9 +3,10 @@ import os
 from PIL import Image
 import face_recognition
 import numpy as np
+import time
 
 # Load the image
-image_path = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Second_Iteration/Images/People/image2.jpg'
+image_path = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Face_Recognition/Images/People/image2.jpg'
 image = cv2.imread(image_path)
 
 # Convert the image to grayscale
@@ -14,12 +15,14 @@ gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 # Load the pre-trained Haar Cascade classifier for face detection
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
+# Start the timer
+start_time = time.time()
 # Detect faces in the image
 faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30),
                                       flags=cv2.CASCADE_SCALE_IMAGE)
 
 # Directory to save unique faces
-faces_directory = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Second_Iteration/Images/Detected_Faces/'
+faces_directory = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Face_Recognition/Images/Detected_Faces/'
 if not os.path.exists(faces_directory):
     os.makedirs(faces_directory)
 
@@ -61,3 +64,8 @@ for i, (x, y, w, h) in enumerate(faces):
         print(f'Face {i + 1} is already detected.')
 
 print(f'Detected and saved {len(faces)} unique faces.')
+# End the timer
+end_time = time.time()
+elapsed_time = end_time - start_time
+print(f'Detected and saved unique faces in {elapsed_time:.2f} seconds.')
+
