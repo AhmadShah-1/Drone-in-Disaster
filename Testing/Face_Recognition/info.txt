@@ -1,0 +1,4 @@
+FaceRecognition1: Basic Haarcascade identifier
+FaceRecognition2: Check directory for faces already detected (slow)
+FaceRecognition3: Using different model and GPU support (Can change face detection to GPU but face recognition is difficult to change to gpu)
+FaceRecognition4: Instead of haarcascade or CNN using Yolov8-facedetect
