@@ -2,9 +2,9 @@ import cv2
 import os
 
 # Path to the directory containing images
-image_folder = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Datasets/Images/Aerial_Images/VisDrone2019-MOT-val/sequences/uav0000117_02622_v'
+image_folder = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Datasets/Images/Aerial_Images/VisDrone2019-MOT-val/sequences/u'
 # Output video file path
-video_name = 'uav0000117_02622_v.mp4'
+video_name = 'air_view1.mp4'
 
 # Get a list of all images in the directory
 images = [img for img in os.listdir(image_folder) if img.endswith(".jpg") or img.endswith(".png")]

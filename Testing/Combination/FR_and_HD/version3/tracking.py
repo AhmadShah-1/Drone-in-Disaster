@@ -52,7 +52,7 @@ def tracking(VIDEO_PATH, queue, temp_id_counter, permanent_id_counter, temporary
         tracked_detections = byte_tracker.update_with_detections(human_detections)
 
         # Debugging: Print the structure of tracked_detections
-        print(f"Tracked Detections: {tracked_detections}")
+        # print(f"Tracked Detections: {tracked_detections}")
 
         # Initialize an empty list to store the labels
         labels = []

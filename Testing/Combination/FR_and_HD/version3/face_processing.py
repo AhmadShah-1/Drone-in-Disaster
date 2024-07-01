@@ -27,15 +27,20 @@ def is_face_already_detected(face_image, directory):
                     return True, file_name
     return False, None
 
+
 def face_processing(queue, permanent_id_counter, temporary_ids):
     global seen_faces
 
     while True:
+        print("Running1")
         if not queue.empty():
+            print("Running2")
+
             item = queue.get()
 
-            if item[0] == 'process_face':
+            if item[0] == 'process_face' :
                 face_rgb, tracker_id, frame_index, face_index = item[1:]
+
 
                 print("Processing face")
                 # Check if the face is already detected

@@ -26,7 +26,7 @@ model = YOLO('C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/weights/
 byte_tracker = sv.ByteTrack()
 bounding_box_annotator = sv.BoundingBoxAnnotator()
 label_annotator = sv.LabelAnnotator()
-VIDEO_PATH = "C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Input_Video/Jorge_and_Ahmad.MOV"
+VIDEO_PATH = "C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Input_Video/output_video.mp4"
 
 # Record of seen individuals' faces and their tracker IDs
 seen_faces = {}
