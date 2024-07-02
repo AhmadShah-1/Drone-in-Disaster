@@ -62,6 +62,7 @@ model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accur
 model.summary()
 
 # Callbacks for early stopping and model checkpoint
+
 best_model_filepath = 'best_model.keras'
 early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
 model_checkpoint = ModelCheckpoint(best_model_filepath, monitor='val_loss', save_best_only=True, mode='min')

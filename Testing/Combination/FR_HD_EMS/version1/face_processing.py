@@ -13,6 +13,10 @@ seen_faces = {}
 # Tracker IDs that have been processed already
 tracker_seen = set()
 
+# Load the pre-trained Haar Cascade classifier for face detection
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+
 def is_face_already_detected(face_image, directory):
     face_encoding = face_recognition.face_encodings(face_image)
     if not face_encoding:
@@ -37,43 +41,58 @@ def face_processing(queue, permanent_id_counter, temporary_ids):
         if not queue.empty():
             item = queue.get()
 
-            if item[0] == 'process_face':
-                face_rgb, tracker_id, frame_index, face_index = item[1:]
+            if item[0] == 'process_person':
+                person_image, tracker_id, frame_index = item[1:]
 
                 # Skip if the tracker ID has already been processed
                 if tracker_id in tracker_seen:
                     continue
 
-                print("Processing face")
-                # Check if the face is already detected
-                is_detected, file_name = is_face_already_detected(face_rgb, faces_directory)
-                if not is_detected:
-                    # Convert to PIL Image format
-                    face_image = Image.fromarray(face_rgb)
+                gray_person_image = cv2.cvtColor(person_image, cv2.COLOR_BGR2GRAY)
 
-                    # Save the unique face image
-                    with permanent_id_counter.get_lock():
-                        face_id = permanent_id_counter.value
-                        face_image_path = os.path.join(faces_directory, f'{face_id}.jpg')
-                        face_image.save(face_image_path)
-                        print(face_image_path)
+                # Detect faces in the image
+                faces = face_cascade.detectMultiScale(gray_person_image, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30),
+                                                      flags=cv2.CASCADE_SCALE_IMAGE)
 
-                        # Compute the face encoding and store it
-                        face_encodings = face_recognition.face_encodings(face_rgb)
-                        if face_encodings:
-                            face_encoding = face_encodings[0]
-                            seen_faces[face_id] = face_encoding  # Store the face encoding for the tracker ID
-                            queue.put(('update_tracker', tracker_id, face_id))
-                            permanent_id_counter.value += 1
-                            print(f'Saved unique face frame_{frame_index}_face_{tracker_id}_{face_index + 1} to {face_image_path}')
-                            tracker_seen.add(tracker_id)
-                else:
-                    print(f'Face frame_{frame_index}_face_{tracker_id}_{face_index + 1} is already detected as {file_name}.')
+                for j, (x, y, w, h) in enumerate(faces):
+                    face = person_image[y:y + h, x:x + w]
 
-                    # Update the tracker ID with the corresponding permanent ID
-                    detected_id = int(file_name.split('.')[0])
-                    queue.put(('update_tracker', tracker_id, detected_id))
-                    tracker_seen.add(tracker_id)
+                    # Send the grayscale face to the queue for emotion detection
+                    queue.put(('process_emotion', face, tracker_id))
+
+                    face_rgb = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
+
+                    print("Processing face")
+                    # Check if the face is already detected
+                    is_detected, file_name = is_face_already_detected(face_rgb, faces_directory)
+                    if not is_detected:
+                        print("Face not seen before")
+                        # Convert to PIL Image format
+                        face_image = Image.fromarray(face_rgb)
+
+                        # Save the unique face image
+                        with permanent_id_counter.get_lock():
+                            face_id = permanent_id_counter.value
+                            face_image_path = os.path.join(faces_directory, f'{face_id}.jpg')
+                            face_image.save(face_image_path)
+                            print(face_image_path)
+
+                            # Compute the face encoding and store it
+                            face_encodings = face_recognition.face_encodings(face_rgb)
+                            if face_encodings:
+                                face_encoding = face_encodings[0]
+                                seen_faces[face_id] = face_encoding  # Store the face encoding for the tracker ID
+                                queue.put(('update_tracker', tracker_id, face_id))
+                                permanent_id_counter.value += 1
+                                print(f'Saved unique face frame_{frame_index}_face_{tracker_id}_{j + 1} to {face_image_path}')
+                                tracker_seen.add(tracker_id)
+                    else:
+                        print(f'Face frame_{frame_index}_face_{tracker_id}_{j + 1} is already detected as {file_name}.')
+
+                        # Update the tracker ID with the corresponding permanent ID
+                        detected_id = int(file_name.split('.')[0])
+                        queue.put(('update_tracker', tracker_id, detected_id))
+                        tracker_seen.add(tracker_id)
 
             elif item[0] == 'update_tracker':
                 tracker_id, permanent_id = item[1:]

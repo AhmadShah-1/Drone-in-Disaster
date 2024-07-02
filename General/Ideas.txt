@@ -1,0 +1,3 @@
+Add microphone to drone to detect distress calls such as "help"
+When a person is detected, tag the current location of the drone and send it
+

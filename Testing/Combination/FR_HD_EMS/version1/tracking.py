@@ -3,12 +3,6 @@ from ultralytics import YOLO
 import numpy as np
 import cv2
 import os
-from multiprocessing import Value, Queue, Manager
-
-# Directory to save unique faces
-faces_directory = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Combination/FR_and_HD/Detected_Faces'
-if not os.path.exists(faces_directory):
-    os.makedirs(faces_directory)
 
 # Load YOLO model and move to GPU
 model = YOLO('C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/weights/yolov8s.pt').to('cuda')
@@ -18,9 +12,7 @@ byte_tracker = sv.ByteTrack()
 bounding_box_annotator = sv.BoundingBoxAnnotator()
 label_annotator = sv.LabelAnnotator()
 
-def tracking(VIDEO_PATH, queue, temp_id_counter, permanent_id_counter, temporary_ids):
-    # Load the pre-trained Haar Cascade classifier for face detection
-    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+def tracking(VIDEO_PATH, queue, temp_id_counter, permanent_id_counter, temporary_ids, emotion_results):
 
     def callback(frame: np.ndarray, index: int) -> np.ndarray:
         # Run YOLO model on frame
@@ -52,7 +44,7 @@ def tracking(VIDEO_PATH, queue, temp_id_counter, permanent_id_counter, temporary
         tracked_detections = byte_tracker.update_with_detections(human_detections)
 
         # Debugging: Print the structure of tracked_detections
-        print(f"Tracked Detections: {tracked_detections}")
+        # print(f"Tracked Detections: {tracked_detections}")
 
         # Initialize an empty list to store the labels
         labels = []
@@ -64,7 +56,10 @@ def tracking(VIDEO_PATH, queue, temp_id_counter, permanent_id_counter, temporary
                 tracked_detections.class_id,
                 tracked_detections.tracker_id
         ):
-            # tracker_id not in
+            # Temporary_ids is a dictionary that maps either trackers IDs to temp IDs or permanent IDs
+            # Here we are checked if tracker_ids is in the dicitionary, if not that means its a newly seen person
+            # We also check the if its not a string, because permanent ids are numbers and temp ids have a "Temp" with it
+            # So we are checking for tracker_ids that exist and have a permanent id
             if tracker_id in temporary_ids and not isinstance(temporary_ids[tracker_id], str):
                 label = f"# {temporary_ids[tracker_id]} {model.model.names[class_id]} {confidence:0.2f}"
                 labels.append(label)
@@ -81,31 +76,27 @@ def tracking(VIDEO_PATH, queue, temp_id_counter, permanent_id_counter, temporary
                 # Extract the part of the image within the bounding box
                 x1, y1, x2, y2 = map(int, xyxy)
                 person_image = frame[y1:y2, x1:x2]
-                gray_person_image = cv2.cvtColor(person_image, cv2.COLOR_BGR2GRAY)
 
-                # Detect faces in the image
-                faces = face_cascade.detectMultiScale(gray_person_image, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30),
-                                                      flags=cv2.CASCADE_SCALE_IMAGE)
-
-                # Iterate over the detected faces and send them to the processing queue
-                for j, (x, y, w, h) in enumerate(faces):
-                    # Extract the face from the image
-                    face = person_image[y:y + h, x:x + w]
-                    face_rgb = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
-                    # Send face to the queue for processing
-                    queue.put(('process_face', face_rgb, tracker_id, index, j))
+                # Send the person image to the queue for face processing
+                queue.put(('process_person', person_image, tracker_id, index))
 
             # Format the label using an f-string
             label = f"# {temporary_ids[tracker_id]} {model.model.names[class_id]} {confidence:0.2f}"
             # Add the formatted label to the labels list
             labels.append(label)
 
-        # Ensure that every detection has a label
-        if len(labels) != len(tracked_detections.xyxy):
-            raise ValueError("The number of labels provided does not match the number of detections. Each detection should have a corresponding label.")
-
+        # Annotate the frame with bounding boxes and labels
         annotated_frame = bounding_box_annotator.annotate(scene=frame.copy(), detections=tracked_detections)
         annotated_frame = label_annotator.annotate(scene=annotated_frame, detections=tracked_detections, labels=labels)
+
+        # Update the bounding box colors based on emotion results
+        for i, (xyxy, tracker_id) in enumerate(zip(tracked_detections.xyxy, tracked_detections.tracker_id)):
+            emotion = emotion_results.get(tracker_id, None)
+            print(emotion)
+            color = (0, 255, 0)  # Default to green
+            if emotion in ['angry', 'disgust', 'fear', 'sad']:
+                color = (0, 0, 255)  # Red for negative emotions
+            cv2.rectangle(annotated_frame, (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3])), color, 2)
 
         # Display the annotated frame
         cv2.imshow('Processed Video', annotated_frame)
@@ -117,7 +108,7 @@ def tracking(VIDEO_PATH, queue, temp_id_counter, permanent_id_counter, temporary
         return annotated_frame
 
     # Process the video
-    sv.process_video(source_path=VIDEO_PATH, target_path="../../Output_Video/Tracking.mp4", callback=callback)
+    sv.process_video(source_path=VIDEO_PATH, target_path="C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Output_Video/PeaceMaker.mp4", callback=callback)
 
     # Release the video window
     cv2.destroyAllWindows()

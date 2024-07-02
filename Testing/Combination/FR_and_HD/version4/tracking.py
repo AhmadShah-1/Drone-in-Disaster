@@ -44,7 +44,7 @@ def tracking(VIDEO_PATH, queue, temp_id_counter, permanent_id_counter, temporary
         tracked_detections = byte_tracker.update_with_detections(human_detections)
 
         # Debugging: Print the structure of tracked_detections
-        print(f"Tracked Detections: {tracked_detections}")
+        # print(f"Tracked Detections: {tracked_detections}")
 
         # Initialize an empty list to store the labels
         labels = []
@@ -56,7 +56,10 @@ def tracking(VIDEO_PATH, queue, temp_id_counter, permanent_id_counter, temporary
                 tracked_detections.class_id,
                 tracked_detections.tracker_id
         ):
-            # tracker_id not in
+            # Temporary_ids is a dictionary that maps either trackers IDs to temp IDs or permanent IDs
+            # Here we are checked if tracker_ids is in the dicitionary, if not that means its a newly seen person
+            # We also check the if its not a string, because permanent ids are numbers and temp ids have a "Temp" with it
+            # So we are checking for tracker_ids that exist and have a permanent id
             if tracker_id in temporary_ids and not isinstance(temporary_ids[tracker_id], str):
                 label = f"# {temporary_ids[tracker_id]} {model.model.names[class_id]} {confidence:0.2f}"
                 labels.append(label)

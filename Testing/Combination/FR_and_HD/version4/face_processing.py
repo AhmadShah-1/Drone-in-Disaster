@@ -13,6 +13,10 @@ seen_faces = {}
 # Tracker IDs that have been processed already
 tracker_seen = set()
 
+# Load the pre-trained Haar Cascade classifier for face detection
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+
 def is_face_already_detected(face_image, directory):
     face_encoding = face_recognition.face_encodings(face_image)
     if not face_encoding:
@@ -32,9 +36,6 @@ def is_face_already_detected(face_image, directory):
 
 def face_processing(queue, permanent_id_counter, temporary_ids):
     global seen_faces, tracker_seen
-
-    # Load the pre-trained Haar Cascade classifier for face detection
-    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
     while True:
         if not queue.empty():
@@ -61,6 +62,7 @@ def face_processing(queue, permanent_id_counter, temporary_ids):
                     # Check if the face is already detected
                     is_detected, file_name = is_face_already_detected(face_rgb, faces_directory)
                     if not is_detected:
+                        print("Face not seen before")
                         # Convert to PIL Image format
                         face_image = Image.fromarray(face_rgb)
 
