@@ -10,6 +10,9 @@ faces_directory = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Com
 # Record of seen individuals' faces and their tracker IDs
 seen_faces = {}
 
+# Tracker IDs that have been processed already
+tracker_seen = set()
+
 def is_face_already_detected(face_image, directory):
     face_encoding = face_recognition.face_encodings(face_image)
     if not face_encoding:
@@ -27,20 +30,19 @@ def is_face_already_detected(face_image, directory):
                     return True, file_name
     return False, None
 
-
 def face_processing(queue, permanent_id_counter, temporary_ids):
-    global seen_faces
+    global seen_faces, tracker_seen
 
     while True:
-        print("Running1")
         if not queue.empty():
-            print("Running2")
-
             item = queue.get()
 
-            if item[0] == 'process_face' :
+            if item[0] == 'process_face':
                 face_rgb, tracker_id, frame_index, face_index = item[1:]
 
+                # Skip if the tracker ID has already been processed
+                if tracker_id in tracker_seen:
+                    continue
 
                 print("Processing face")
                 # Check if the face is already detected
@@ -64,12 +66,14 @@ def face_processing(queue, permanent_id_counter, temporary_ids):
                             queue.put(('update_tracker', tracker_id, face_id))
                             permanent_id_counter.value += 1
                             print(f'Saved unique face frame_{frame_index}_face_{tracker_id}_{face_index + 1} to {face_image_path}')
+                            tracker_seen.add(tracker_id)
                 else:
                     print(f'Face frame_{frame_index}_face_{tracker_id}_{face_index + 1} is already detected as {file_name}.')
 
                     # Update the tracker ID with the corresponding permanent ID
                     detected_id = int(file_name.split('.')[0])
                     queue.put(('update_tracker', tracker_id, detected_id))
+                    tracker_seen.add(tracker_id)
 
             elif item[0] == 'update_tracker':
                 tracker_id, permanent_id = item[1:]

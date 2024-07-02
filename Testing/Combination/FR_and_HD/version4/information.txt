@@ -1,0 +1,1 @@
+This version seperates detection and tracking from facial detection and recognition

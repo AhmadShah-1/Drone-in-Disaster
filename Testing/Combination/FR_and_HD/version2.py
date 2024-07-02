@@ -26,7 +26,7 @@ model = YOLO('C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/weights/
 byte_tracker = sv.ByteTrack()
 bounding_box_annotator = sv.BoundingBoxAnnotator()
 label_annotator = sv.LabelAnnotator()
-VIDEO_PATH = "C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Input_Video/output_video.mp4"
+VIDEO_PATH = "C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Input_Video/Jorge_and_Ahmad.MOV"
 
 # Record of seen individuals' faces and their tracker IDs
 seen_faces = {}
@@ -167,7 +167,7 @@ def callback(frame: np.ndarray, index: int) -> np.ndarray:
     return annotated_frame
 
 # Process the video
-sv.process_video(source_path=VIDEO_PATH, target_path="C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Output_Video/Testing4.mp4", callback=callback)
+sv.process_video(source_path=VIDEO_PATH, target_path="C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Output_Video/Testing5.mp4", callback=callback)
 
 # Release the video window
 cv2.destroyAllWindows()

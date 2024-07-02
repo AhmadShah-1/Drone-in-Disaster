@@ -1,4 +1,3 @@
-
 VIDEO_PATH = "C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Input_Video/Jorge_and_Ahmad.MOV"
 
 from multiprocessing import Process, Queue, Value, Manager

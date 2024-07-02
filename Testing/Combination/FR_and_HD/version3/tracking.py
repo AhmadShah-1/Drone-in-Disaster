@@ -6,7 +6,7 @@ import os
 from multiprocessing import Value, Queue, Manager
 
 # Directory to save unique faces
-faces_directory = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Combination/FR_and_HD/Detected_Faces'
+faces_directory = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Combination/FR_and_HD/version3/Detected_Faces'
 if not os.path.exists(faces_directory):
     os.makedirs(faces_directory)
 
@@ -52,7 +52,7 @@ def tracking(VIDEO_PATH, queue, temp_id_counter, permanent_id_counter, temporary
         tracked_detections = byte_tracker.update_with_detections(human_detections)
 
         # Debugging: Print the structure of tracked_detections
-        # print(f"Tracked Detections: {tracked_detections}")
+        print(f"Tracked Detections: {tracked_detections}")
 
         # Initialize an empty list to store the labels
         labels = []
@@ -64,7 +64,7 @@ def tracking(VIDEO_PATH, queue, temp_id_counter, permanent_id_counter, temporary
                 tracked_detections.class_id,
                 tracked_detections.tracker_id
         ):
-            # If the tracker ID already has a permanent ID, skip processing
+            # tracker_id not in
             if tracker_id in temporary_ids and not isinstance(temporary_ids[tracker_id], str):
                 label = f"# {temporary_ids[tracker_id]} {model.model.names[class_id]} {confidence:0.2f}"
                 labels.append(label)

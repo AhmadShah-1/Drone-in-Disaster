@@ -1,0 +1,1 @@
+This Version focuses on implementing the human detection, tracking, and facial detection into one part and the facial recongition to a seperate part. By grouping them to different processesing threads.
