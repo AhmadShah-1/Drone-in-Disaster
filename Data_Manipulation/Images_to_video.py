@@ -2,7 +2,7 @@ import cv2
 import os
 
 # Path to the directory containing images
-image_folder = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Datasets/Images/Aerial_Images/VisDrone2019-MOT-val/sequences/u'
+image_folder = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Datasets/Output_Images/Aerial_Images/VisDrone2019-MOT-val/sequences/u'
 # Output video file path
 video_name = 'air_view1.mp4'
 

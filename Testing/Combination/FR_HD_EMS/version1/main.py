@@ -1,4 +1,4 @@
-VIDEO_PATH = "C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Input_Video/nyc_people_walking1.mp4"
+VIDEO_PATH = "C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Input_Video/Ahmad.MP4"
 
 from multiprocessing import Process, Queue, Value, Manager
 from tracking import tracking

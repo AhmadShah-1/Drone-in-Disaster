@@ -21,7 +21,7 @@ start_time = time.time()
 results = model.predict(image)
 
 # Directory to save unique faces
-faces_directory = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Face_Recognition/Images/Detected_Faces/'
+faces_directory = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Face_Recognition/Output_Images/Detected_Faces/'
 if not os.path.exists(faces_directory):
     os.makedirs(faces_directory)
 

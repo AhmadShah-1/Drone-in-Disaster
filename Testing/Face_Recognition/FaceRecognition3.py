@@ -5,12 +5,12 @@ import face_recognition
 import numpy as np
 
 # Load the image
-image_path = '/Testing/Face_Recognition/Images/People/image2.jpg'
+image_path = '/Testing/Face_Recognition/Output_Images/People/image2.jpg'
 image = cv2.imread(image_path)
 
 # Load the deep learning model for face detection
-prototxt_path = '/Testing/Face_Recognition/Images/weights/deploy.prototxt'  # Path to the deploy.prototxt.txt
-model_path = '/Testing/Face_Recognition/Images/weights/res10_300x300_ssd_iter_140000.caffemodel'  # Path to the .caffemodel
+prototxt_path = '/Testing/Face_Recognition/Output_Images/weights/deploy.prototxt'  # Path to the deploy.prototxt.txt
+model_path = '/Testing/Face_Recognition/Output_Images/weights/res10_300x300_ssd_iter_140000.caffemodel'  # Path to the .caffemodel
 net = cv2.dnn.readNetFromCaffe(prototxt_path, model_path)
 net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
 net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
@@ -24,7 +24,7 @@ net.setInput(blob)
 detections = net.forward()
 
 # Directory to save unique faces
-faces_directory = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Face_Recognition/Images/Detected_Faces/'
+faces_directory = 'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Testing/Face_Recognition/Output_Images/Detected_Faces/'
 if not os.path.exists(faces_directory):
     os.makedirs(faces_directory)
 

@@ -39,7 +39,7 @@ def predict_emotion(image_path):
 
 # Test the model on custom images
 image_paths = [
-    'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Datasets/Images/Emotion_Classification/test/angry/PrivateTest_1054527.jpg',
+    'C:/Users/alex1/Desktop/Ahmad_Stuff/Drone_Disaster/Datasets/Output_Images/Emotion_Classification/test/angry/PrivateTest_1054527.jpg',
     # Add more image paths as needed
 ]
 

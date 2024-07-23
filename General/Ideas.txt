@@ -1,3 +1,11 @@
+
+Equipment:
 Add microphone to drone to detect distress calls such as "help"
+
+Active Location:
 When a person is detected, tag the current location of the drone and send it
+
+Preplanning:
+Utilize satellite image datasets to identify destroyed buildings and
+make drone specify areas of interest based on destroyed buildings
 
