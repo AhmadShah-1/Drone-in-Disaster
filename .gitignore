@@ -17,6 +17,9 @@
 *.svg
 *.webp
 
+# Exclude all weight files
+*.pt
+
 # Exclude all _pycache_ directories and files
 __pycache__/
 *.py[cod]
