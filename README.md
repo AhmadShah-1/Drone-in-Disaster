@@ -19,5 +19,6 @@ OpenAI Gym for Simulatiom
 TensorFlow/Keras for Emotion Recognition
 How to Use: Detailed steps for setup, running simulations, and interpreting results will be included in the repository's documentation.
 
-## Acknowledgments: This framework builds on the latest advancements in UAV technologies, reinforcement learning, and federated systems. It draws inspiration from real-world disaster recovery needs and incorporates cutting-edge machine learning algorithms for robust performance.
+## Acknowledgments:
+This framework builds on the latest advancements in UAV technologies, reinforcement learning, and federated systems. It draws inspiration from real-world disaster recovery needs and incorporates cutting-edge machine learning algorithms for robust performance.
 
